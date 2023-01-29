@@ -1,15 +1,41 @@
 package pro.sky.storageapp.Model;
 
+import java.util.Objects;
+
 public class Socks {
-    private String color;
-    private int size;
-    private int structure;
-    private int existense;
+    private final Color color;
+    private final Size size;
+    private final int cottonPercent;
 
-    public enum color {
-        //RED("red"), WHITE("white"), BLACK("black"), BROWN("brown"), GREEN("green")
 
+    public Socks(Color color, Size size, int cottonPercent) {
+        this.color = color;
+        this.size = size;
+        this.cottonPercent = cottonPercent;
     }
 
+    public Color getColor() {
+        return color;
+    }
 
+    public Size getSize() {
+        return size;
+    }
+
+    public int getCottonPercent() {
+        return cottonPercent;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Socks socks = (Socks) o;
+        return cottonPercent == socks.cottonPercent && color == socks.color && size == socks.size;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, size, cottonPercent);
+    }
 }

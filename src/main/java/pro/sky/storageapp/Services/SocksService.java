@@ -1,5 +1,7 @@
 package pro.sky.storageapp.Services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import pro.sky.storageapp.Model.Color;
 import pro.sky.storageapp.Model.Size;
@@ -8,11 +10,19 @@ import pro.sky.storageapp.dto.SockRequest;
 import pro.sky.storageapp.exception.InSufficientSockQuantityException;
 import pro.sky.storageapp.exception.InvalidSockRequestException;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 @Service
 public class SocksService {
+    private final ObjectMapper objectMapper;
     private final Map<Socks, Integer> socks = new HashMap<>();
+
+    public SocksService(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     public void addSock(SockRequest sockRequest) {
         validateRequest(sockRequest);
@@ -24,6 +34,12 @@ public class SocksService {
         }
     }
 
+    public FileSystemResource exportData() throws IOException {
+        Path filePath = Files.createTempFile("export-", ".json");
+        Files.write(filePath,
+                objectMapper.writeValueAsBytes(this.socks));
+        return new FileSystemResource(filePath);
+    }
     public void issueSock(SockRequest sockRequest) {
         decreaseSockQuantity(sockRequest);
     }
